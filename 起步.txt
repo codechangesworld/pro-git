@@ -1,0 +1,58 @@
+一、Git简史
+
+	Linux内核开源项目由全球各地众多开发者共同开发，起初所有开发者提交的代码都有Linux创始人Linux Torvalds手动合并，后来由于手工合并工作量太大，2002年，使用了一个商业公司免费授权的分布式版本控制系统BitKeeper管理和维护代码。2005年结束了BitKeeper使用，Linux社区设计开发了一个免费的分布式版本控制系统Git，从2005年诞生以来，得到了飞速的发展。
+
+
+二、Git基础
+
+	Git记录快照，而非差异。每次保存一组文件时，Git为所有文件创建一个快照作为新的版本，为了保证高效，对于没有修改的文件，只保存一个指向该文件的索引。
+	其他版本控制系统（CVS，SVN等）：保存一组基本文件和每个文件随时间积累的差异。
+
+	Git在本地的.git/目录下保存整个项目的一个备份，并在当前目录建立最新版本的项目副本，因此可以在不联网的情况下工作。
+
+	Git使用SHA-1为每一个保存的数据文件计算哈希值，并根据哈希值建立文件索引。
+
+	Git文件有三种状态：
+		已修改（modified）：相对于上一个版本快照，对文件进行了修改，但还没有提交到本地数据库；
+		已暂存（staged）  ：对修改的文件当前版本进行标记，将文件加入下次快照目录中；
+		以提交（committed）：文件已经安全的保存到本地数据库中。
+
+		本地工作区           暂存区          代码仓库
+			|									|
+			|<---------------获取---------------|
+			|				   |				|	
+		modified ---------> staged --------> commited
+
+	Git工作流程：
+		a，从Git仓库获取文件到本地工作区；
+		b，在本地工作区修改文件；
+		c，暂存文件，将文件快照存入暂存区；
+		d，提交更新，将暂存区文件保存如本地Git仓库中。
+
+	Git所哟工作都可以在命令行完成，有GUI工作环境，GUI只有Git所有命令的一部分，简化了版本控制操作。
+
+三、安装
+
+	Debain：sudo apt-get install git
+	Fedora：sudo yum install git
+	Windows：下载安装包
+	Mac：
+
+	源代码安装：
+
+四、Git配置
+		
+	Git有三个级别的配置：系统级（--system）、用户级（--global）、仓库级（空）
+	系统级配置文件在/etc/gitconfig中，用户级配置在用户目录下的.gitconfig中，仓库级配置在每个git仓库目录.git/目录中。
+
+	安装完成使用前需要在计算机上配置git使用的用户信息：
+	git config --global user.name "User Name"
+	git config --global user.email "useremail@xxx.com"
+
+	这些信息每次提交时都会写入到提交者的信息中，和代码仓库的用户名以及邮件没关系。
+
+	列出当前git所有配置信息：git config --list
+	列出用户信息：git config --list | sls user
+	查找指定配置：git config <key> (eg: git config user.name)
+
+	帮助：git help <cmd>

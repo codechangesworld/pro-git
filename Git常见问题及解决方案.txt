@@ -1,0 +1,8 @@
+
+问题：
+	git 中文显示乱码
+
+解决方案：
+	http://blog.csdn.net/zhanlanmg/article/details/49862779
+	http://blog.csdn.net/gxp/article/details/26563579
+
