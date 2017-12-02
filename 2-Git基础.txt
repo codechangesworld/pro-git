@@ -138,3 +138,67 @@
 	在 Git 中任何已提交（commited）的东西几乎总是可以恢复的。甚至那些被删除的分支中的提交或使用 
 	--amend 选项覆盖的提交也可以恢复。然而，任何你未提交的东西丢失后很可能再也找不到了。
 
+五、远程仓库的使用
+
+	命令：git remote
+	功能：查看远程仓库，返回远程仓库的简写名称，如：默认的 origin 或自定义名称。
+
+	命令：git remote -v
+	功能：返回远程仓库的简写以及连接信息。
+
+	命令：git remote add <shortname> <url>
+	功能：添加远程仓库，short-name 为仓库简写名。
+
+	命令：git fetch <remote-name>
+	功能：从远程仓库抓取数据，被抓取数据为远程仓库有但本地仓库没有的数据，会拉取远程仓库所有分支，
+	      使得本地拥有远程仓库所有分支的引用，但不会自动合并数据到本地仓库中。
+
+	命令：git pull
+	功能：若本地分支跟踪一个远程分支，则可以直接拉取并合并远程数据到本地中。
+
+	命令：git push <remote-name> <brance-name>
+	功能：推送本地分支数据到远程仓库
+
+	命令：git remote show <remote-name>
+	功能：查看远程仓库详细信息，包括远程仓库所有分支，本地分支跟踪情况，以及git pull和git push命令自动合并和更新情况。
+
+	命令：git remote rename <source-name> <target-name>
+	功能：重命名远程仓库引用简写名称<shortname>
+
+	命令：git remote rm <remote-name>
+	功能：移除远程仓库引用
+
+六、打标签
+	
+	Git 可以给历史中的某一次提交打标签，表示该提交的重要性。
+	Git标签有 “轻量标签” 和 “附注标签” 两种，前者仅保存对某次提交的引用，没有额外信息。
+	后者包含了许多额外信息，一般建议使用后者。
+
+	命令：git tag [-l 'tag-name']
+	功能：列出已有标签，若标签太多，选项 '-l' 会只列出指定标签。
+
+	命令：git tag -a <tag-name> -m 'comment'
+	功能：创建附注标签，并添加注释信息。
+
+	命令：git show <tag-name>
+	功能：显示标签信息和提交信息。
+
+	命令：git tag <tag-name>
+	功能：创建轻量标签
+
+	命令：git tag -a <tag-name> <hash>
+	功能：为历史中的某次提交创建标签，hash 为该次提交的哈希校验值（前边部分值也可以）。
+
+	命令：git push <remote-name> <tag-name>
+	功能：将指定标签推送到远程仓库。
+
+	命令：git push <remote-name> --tags
+	功能：将不再远程仓库的所有标签推送过去。
+
+	命令：git checkout -b <branch-name> <tag-name>
+	功能：从 tag-name 标签检出项目并创建新的分支。
+
+七、Git别名
+
+	命令：git config --global alias.st status
+	功能：为 stutas 命令设置全局别名 st，之后使用 git status 与 git st 功能相同。
