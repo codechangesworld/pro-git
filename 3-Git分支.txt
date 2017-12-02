@@ -1,0 +1,166 @@
+一、分支简介
+
+    分支可以将工作从主线开发上分离开来，以免影响开发主线。
+    其他很多版本控制系统的分支通常采用复制主分支目录副本的方式建立分支，对大项目来说效率低下。
+    据称，Git 的分支功能模型是其“必杀技特性”，使得Git在众多版本控制系统中脱颖而出。
+    Git的分支处理方式是轻量级的，可以瞬间创建新的分支，并快速在分支间切换。
+
+    1、数据保存方式
+
+        Git 采用快照的方式保存版本数据，每个快照就是一个版本，每个快照的生成包含两个阶段：
+        a，使用 git add 将文件加入暂存区，此时会计算每个文件的哈希值，并将该文件作为其此时的快照版本；
+        b，使用 commit 提交将数据保存文快照对象，存入本地仓库，在此过程中，git 先计算该项目每个子目录的哈希值，
+           然后将这些哈希值保存为一个目录树对象，最后 git 创建一个提交的快照对象，里面包含了本次相关提交信息外，
+           还有一个指向目录树对象的指针。因此，git在需要时可以通过指针访问快照中的文件数据。
+
+        当文件经过修改在此提交时，git 创建的快照对象会包含一个上次快照对象的指针，因此，可以快速的访问上次快照内容。
+
+    2、Git分支
+
+        Git 的分支本质上就是指向每次提交的快照对象的指针。
+
+        每次创建新的分支时，直接创建一个基于当前分支（如：master）最新版本的快照指针（如：test），该指针代表的就
+        是新的分支test，当对test分支进行修改后提交时，会创建新的快照保存，test分支指针向前移动，指向新的快照，
+        而master分支有自己的指针，并不会移动。当对master分支修改后提交时，创建其分支的快照对象，并将master分支指针
+        移动指向其创建的快照，此时，master分支和test分支会产生分叉，成为两个有不同快照的分支。
+
+        Git对每个代码仓库都有一个 HEAD 指针，该指针在所有分支指针间移动，用来表示当前工作分支。
+
+    3、 分支操作
+
+        命令：git branch <branch-name>
+        功能：创建分支
+
+        命令：git log --oneline --decorate
+        功能：查看当前各个分支所指向的快照对象
+
+        命令：git checkout <branch-name>
+        功能：切换到已存在的分支，即将 HEAD 指针指向该分支，并从该分支的快照数据中恢复工作区文件。
+
+        注：切换分支会改变当前工作目录的文件内容，因此在切换前要保存当前分支数据，需要 commit。
+
+        命令：git log --oneline --decorate --graph --all
+        功能：输出项目分支历史，各个分支的指向以及当前分支指向
+
+二、分支的建立与合并
+
+    命令：git checkout -b <branch-name>
+    功能：新建分支，并切换到该分支，相当于 git branch <branch-name> 与 git checkout <branch-name>
+
+    命令: git branch -d <branch-name>
+    功能：删除本地分支
+
+    命令：git merge <source-branch>
+    功能：将 source-branch 分支合并到当前分支
+
+    注：
+    合并分支中的 “快进（Fast-Forward）”，指的是两个分支间没有分叉，可以直接移动指针。
+    当两个分支间有分叉时，合并时会将两个分支末端所指快照和其祖先快照进行三方合并，
+    以祖先快照为基础，添加两个快照新的修改，形成新的快照，进行合并提交，该提交有两个父提交。
+    当进行三方合并时，若两个分支对同一个文件的同一个地方都进行了修改，就会产生冲突，需要进行手动修改冲突文件。
+    可以用git status查看 冲突而未合并的文件，冲突解决后，使用git add 添加文件，在使用git commit 提交文件，完成合并。
+
+三、分支管理    
+    
+    命令：git branch [-v]
+    功能：显示所有分支，选项 -v 表示显示详细信息
+
+    选项：--merged --no-merged
+    功能：表示过滤已经合并到当前分支的分支和未合并的分支
+
+    注：尝试删除未合并分支时会提示出错
+
+四、分支开发工作流
+
+    由于git强大的分支功能，在项目开发时一般会根据代码稳定性建立多个开发分支，一般的master主分支是长期分支，保存最稳定
+    的代码，develop分支表示开发版的分支，还可以有其他分支。
+
+    当地稳定版开发分支的代码测试稳定之后，就可以将该分支合并入稳定度更高的上级分支中。
+
+    通常开发中还可以在当前开发分支上创建短期的临时分支，用来测试新功能方案的可行性。
+
+五、远程分支
+
+    远程引用（指针）是指在远程仓库内包括分支、标签等的引用。
+
+    命令：git ls-remote <remote-name>
+    功能：获取远程引用列表
+
+    命令：git remote show <remote-name> 
+    功能：显示远程仓库详细信息
+
+    “远程跟踪分支” 是 “远程分支” 状态的引用。保存在本地，但不能手动移动其指针位置，当进行网络通讯时Git会自动移动。
+
+    远程跟踪引用的形式：remote-name/branch-name
+
+
+    1、克隆（clone）
+
+        当克隆服务器项目时（git clone），git一般会自动在本地创建远程跟踪引用 origin/master，表示对origin服务器上master
+        分支的引用，同时会创建一个名为master的引用，指向同一个快照位置，表示本地工作分支。
+        当对master分支文件修改并提交后，master指针向前移动，但 origin/master 指针并不移动，除非origin服务器仓库文件有
+        新的提交，并且通过 git fetch origin 命令抓取数据到本地后， origin/master 指针才会自动移动到其分支的最新快照位置。
+
+
+    2、推送（push）
+
+        将本地分支的数据推送到服务器仓库中，可以实现数据的分享。
+
+        命令：git push <remote-name> <local-branch>
+        功能：将本地分支推送到远程仓库相同名称的分支中
+
+        eg：git push origin master  ==> 表示将本地仓库 master 分支推送到 origin 中的 master分支中，并更新其内容。
+        eg: git push origin master:master ==> 和上一例作用相同
+        eg: git push origin master:develop  ==>  表示将本地 master 分支推送到远程 develop 分支中，若没有该分支则自动创建。
+
+    3、拉取（fetch）
+
+        命令：git fetch <remote-name>
+        功能：从远程仓库抓取分支数据
+
+        注：从远程仓库抓取新的本地没有的 “远程跟踪分支” 时，只会创建一个 remote/branch 形式的远程跟踪分支，不会向clone
+        一样创建可以工作编辑的本地指针，可以使用 git merge remote/branch 命令合并远程分支到当前分支，或者使用如下命令
+        创建新的工作分支：git checkout -b <branch-name> remote/branch , 新分支的起点与远程跟踪分支起点相同，类似clone
+        执行后的效果。
+
+
+    4、跟踪（track）
+
+        跟踪分支是与远程分支有直接关联的本地分支，克隆时会自动创建跟踪分支，master 分支时 origin/master 远程分支的跟踪分支。
+        也可以不使用自动创建的master分支，自己创建分支：git checkout -b <branch-name> remote/branch 。
+        也可以使用命令：git checkout --track remote/branch，创建与远程分支名称相同的本地分支。
+
+        在跟踪分支上使用 git pull 命令，Git可以自动识别从哪个服务器获取数据，并自动合并到对应本地分支。
+
+        命令：git branch -u remote/branch
+        功能：修改当前分支所跟踪的远程分支
+
+        命令：git branch -vv
+        功能：查看所有跟踪分支详细信息，其不连接服务器，只在本地缓存中查询上层抓取的服务器数据，
+        可以先使用 git fetch --all 命令抓取所有数据后在查询。
+
+    5、删除（delete）
+
+        命令：git push <remote> --delete <branch>
+        功能：删除远程仓库的指定分支
+
+六、变基（rebase）
+
+    Git 合并分支有两种方法：merge 和 rebase，前者进行三方合并，后者将一个分支的修改操作在另一个分支上重新应用一遍。
+
+    两个分支 source-branch 和 target-branch，将source合并到target中的步骤如下：
+
+        git checkout source-branch
+        git rebase target-branch
+        git checkout target-branch
+        git merge source-branch
+
+    两种合并操作结果快照完全相同，但是变基操作的提交历史更加简洁，是串行的，提交历史没有分叉，保证了向远程仓库推送
+    时提交历史的简洁。
+
+    变基操作遵循的准则：
+    Do not rebase commits that exist outside your repository.（不要对在你的仓库外有副本的分支执行变基。）
+    如果已提交工作在已被其他人获取使用，则不要使用变基。
+
+    总的原则是，只对尚未推送或分享给别人的本地修改执行变基操作清理历史，从不对已推送至别处的提交执行变基操作，
+    这样，你才能享受到两种方式带来的便利。
