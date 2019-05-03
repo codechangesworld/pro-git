@@ -67,7 +67,7 @@
 		功能：该命令用来比较工作目录中的文件与暂存区快照文件之间的差异，也就是修改后还未暂存的变化详细内容。
 		
 		命令：git diff --cached 或 git diff --staged
-		功能：表示已暂存但还未提交的文件详细内容
+		功能：表示已暂存但还未提交的文件详细内容，也就是暂存区和仓库区文件的差异。
 
 		命令：git difftool --tool=vimdiff
 		功能：图形化输出比较
@@ -84,7 +84,7 @@
 	8、移除文件
 
 		命令：git rm [-f] [--cached] file
-		功能：该命令从暂存区移除文件，并删除工作目录文件。
+		功能：该命令从暂存区移除文件，并删除工作目录文件；提交后会从仓库中当前快照删除文件；
 		若直接在工作目录手动删除文件，使用git status时会出现提示，需要使用git rm命令重新删除暂存区文件。
 		若文件已修改并已暂存，则需要加‘-f’选项强制删除；
 		若只想删除暂存区文件，而保存工作目录文件，需要使用'--cached'选项。
@@ -99,7 +99,7 @@
 		暂存区移除旧文件   ：git rm source_name
 		暂存区添加新文件   ：git add target_name
 
-		注：文件重命名后，在提交前一定要将就文件从暂存区删除，并添加新文件。
+		注：文件重命名后，在提交前一定要将旧文件从暂存区删除，并添加新文件。
 
 三、查看提交历史
 	
@@ -115,6 +115,14 @@
 		full
 		fuller
 		format	可以使用format自定义格式，format常用选项：https://git-scm.com/book/zh/v2/ch00/pretty_format
+	--graph		显示图形表示的分支合并历史
+	--after
+	--since		时间
+	--before
+	--until		时间
+	--author	显示指定作者的提交
+	--grep      显示匹配关键字的提交
+
 	eg:
 	git log --pretty=format:"%h - %an, %ar : %s"
 	git log --pretty=format:"%h %s" --graph

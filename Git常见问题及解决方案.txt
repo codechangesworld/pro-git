@@ -1,7 +1,5 @@
-
 问题：
 	git 中文显示乱码
-
 解决方案：
 	http://blog.csdn.net/zhanlanmg/article/details/49862779
 	http://blog.csdn.net/gxp/article/details/26563579
@@ -9,7 +7,6 @@
 
 问题：
 	更换github账号后，push被旧账号阻止
-
 解决方案：
 	1、可能 ssh 公钥 并未从原有账户删除，并添加到新账号；
 	2、可能 ssh 公钥 已经转移到新账号，但是shell命令中 git remote 后边的URL使用的是 https 协议的，而不是 ssh 协议的。
